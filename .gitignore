@@ -1,0 +1,15 @@
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### Authentication Microservice ###
+Authentication/HELP.md
+Authentication/.mvn/wrapper/maven-wrapper.jar
+Authentication/.mvn/wrapper/maven-wrapper.properties
+Authentication/target/
+Authentication/src/main/resources/application.properties

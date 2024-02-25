@@ -8,6 +8,7 @@ import com.cryp73r.authentication.repository.SessionRepository;
 import com.cryp73r.authentication.repository.UserRepository;
 import com.cryp73r.authentication.sdo.Status;
 import com.cryp73r.authentication.sdo.UserSDO;
+import com.cryp73r.authentication.sdo.VoidReturnTypeResponseSDO;
 import com.cryp73r.authentication.security.IdentifierManager;
 import com.cryp73r.authentication.security.PasswordManager;
 import com.cryp73r.authentication.security.SessionManager;
@@ -81,9 +82,12 @@ public class UserService {
         return new UserSDO(status, userToGet);
     }
 
-    public void logoutUser(String token) {
+    public VoidReturnTypeResponseSDO logoutUser(String token) {
         User userToLogout = validateTokenAndFindUser(token);
-        if (userToLogout == null) return;
+        if (userToLogout == null) {
+            Status status = new Status(HttpStatus.UNAUTHORIZED, "Invalid authentication token or the token is expired");
+            return new VoidReturnTypeResponseSDO(status);
+        }
         Session sessionToRemove = null;
         for (Session session : userToLogout.getSessionList()) {
             if (session.getToken().equals(token)) sessionToRemove = session;
@@ -94,12 +98,19 @@ public class UserService {
         userRepository.save(userToLogout);
         assert sessionToRemove != null;
         sessionRepository.delete(sessionToRemove);
+        Status status = new Status(HttpStatus.OK, userToLogout.getUsername() + " is logged out successfully");
+        return new VoidReturnTypeResponseSDO(status);
     }
 
-    public void deleteUser(String token) {
+    public VoidReturnTypeResponseSDO deleteUser(String token) {
         User userToDelete = validateTokenAndFindUser(token);
-        if (userToDelete == null) return; // later handle this
+        if (userToDelete == null) {
+            Status status = new Status(HttpStatus.UNAUTHORIZED, "Invalid authentication token or the token is expired");
+            return new VoidReturnTypeResponseSDO(status);
+        }
         userRepository.delete(userToDelete);
+        Status status = new Status(HttpStatus.OK, userToDelete.getUsername() + " is deleted successfully");
+        return new VoidReturnTypeResponseSDO(status);
     }
 
     private User validateTokenAndFindUser(String token) {

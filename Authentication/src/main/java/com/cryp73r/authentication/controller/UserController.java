@@ -2,6 +2,7 @@ package com.cryp73r.authentication.controller;
 
 import com.cryp73r.authentication.model.User;
 import com.cryp73r.authentication.sdo.UserSDO;
+import com.cryp73r.authentication.sdo.VoidReturnTypeResponseSDO;
 import com.cryp73r.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -34,15 +35,15 @@ public class UserController {
         return userService.getUser(token);
     }
 
-    @PostMapping(value = "/user")
+    @PostMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void logoutUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        userService.logoutUser(token);
+    public VoidReturnTypeResponseSDO logoutUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        return userService.logoutUser(token);
     }
 
-    @DeleteMapping("/user")
+    @DeleteMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void deleteUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        userService.deleteUser(token);
+    public VoidReturnTypeResponseSDO deleteUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        return userService.deleteUser(token);
     }
 }

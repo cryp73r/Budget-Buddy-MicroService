@@ -1,13 +1,18 @@
 package com.cryp73r.authentication.service;
 
+import com.cryp73r.authentication.exception.UnknownUserException;
+import com.cryp73r.authentication.exception.UserNotFoundException;
 import com.cryp73r.authentication.model.Session;
 import com.cryp73r.authentication.model.User;
 import com.cryp73r.authentication.repository.SessionRepository;
 import com.cryp73r.authentication.repository.UserRepository;
+import com.cryp73r.authentication.sdo.Status;
+import com.cryp73r.authentication.sdo.UserSDO;
 import com.cryp73r.authentication.security.IdentifierManager;
 import com.cryp73r.authentication.security.PasswordManager;
 import com.cryp73r.authentication.security.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,7 +30,7 @@ public class UserService {
     public UserService() {
 
     }
-    public void createUser(User user) {
+    public UserSDO createUser(User user) {
         PasswordManager passwordManager = new PasswordManager();
         IdentifierManager identifierManager = new IdentifierManager();
         SessionManager sessionManager = new SessionManager();
@@ -33,14 +38,17 @@ public class UserService {
         user.setPassword(encodedPassword);
         String identifier = identifierManager.generateIdentifier();
         user.setIdentifier(identifier);
-        Session session = new Session(sessionManager.generateToken(identifier), user);
+        String token = sessionManager.generateToken(identifier);
+        Session session = new Session(token, user);
         List<Session> sessionList = new ArrayList<>();
         sessionList.add(session);
         user.setSessionList(sessionList);
         userRepository.save(user);
+        Status status = new Status(HttpStatus.CREATED, user.getUsername() + " is created successfully");
+        return new UserSDO(status, user, token);
     }
 
-    public void loginUser(User user) {
+    public UserSDO loginUser(User user) {
         User userWithUsername = null;
         for (User iterUser : userRepository.findAll()) {
             if (iterUser.getUsername().equals(user.getUsername())) {
@@ -49,26 +57,28 @@ public class UserService {
             }
         }
         if (userWithUsername == null) {
-            System.out.println("*** User doesn't exist ***");
-            return;
+            throw new UserNotFoundException(user.getUsername() + " doesn't exist, please check the username once");
         }
         PasswordManager passwordManager = new PasswordManager();
         boolean isValid = passwordManager.matches(user.getPassword(), userWithUsername.getPassword());
         if (isValid) {
             SessionManager sessionManager = new SessionManager();
-            Session session = new Session(sessionManager.generateToken(userWithUsername.getIdentifier()), userWithUsername);
+            String token = sessionManager.generateToken(userWithUsername.getIdentifier());
+            Session session = new Session(token, userWithUsername);
             List<Session> sessionList = new ArrayList<>();
             sessionList.add(session);
             userWithUsername.setSessionList(sessionList);
             userRepository.save(userWithUsername);
-        }
-        else System.out.println("*** Invalid username/password ***");
+            Status status = new Status(HttpStatus.OK, userWithUsername.getUsername() + " logged in successfully");
+            return new UserSDO(status, userWithUsername, token);
+        } else throw new UnknownUserException("Invalid username/password");
     }
 
-    public User getUser(String token) {
+    public UserSDO getUser(String token) {
         User userToGet = validateTokenAndFindUser(token);
-        if (userToGet == null) return null; // later handle this
-        return userToGet;
+        if (userToGet == null) throw new UserNotFoundException("User doesn't exist, please check the authorization once");
+        Status status = new Status(HttpStatus.OK, userToGet.getUsername()+"'s profile fetched successfully");
+        return new UserSDO(status, userToGet);
     }
 
     public void logoutUser(String token) {

@@ -1,6 +1,7 @@
 package com.cryp73r.authentication.controller;
 
 import com.cryp73r.authentication.model.User;
+import com.cryp73r.authentication.sdo.UserSDO;
 import com.cryp73r.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -15,21 +16,21 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping(value = "/user/create", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/user/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createUser(@RequestBody User user) {
-        userService.createUser(user);
+    public UserSDO createUser(@RequestBody User user) {
+        return userService.createUser(user);
     }
 
-    @PostMapping(value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void loginUser(@RequestBody User user) {
-        userService.loginUser(user);
+    public UserSDO loginUser(@RequestBody User user) {
+        return userService.loginUser(user);
     }
 
     @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public User getUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    public UserSDO getUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         return userService.getUser(token);
     }
 

@@ -1,9 +1,9 @@
 package com.cryp73r.authentication.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,11 +21,12 @@ public class User {
     private String email;
     @Column(unique = true)
     private String username;
-    @JsonIgnore
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column
     private String password;
 
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(nullable = false, unique = true)
     private String identifier;
 
@@ -90,7 +91,6 @@ public class User {
     public void setUsername(String username) {
         this.username = username;
     }
-
     public String getPassword() {
         return password;
     }
@@ -99,6 +99,7 @@ public class User {
         this.password = password;
     }
 
+    @Transient
     public String getIdentifier() {
         return identifier;
     }

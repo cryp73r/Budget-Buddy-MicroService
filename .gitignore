@@ -9,7 +9,12 @@
 
 ### Authentication Microservice ###
 Authentication/HELP.md
-Authentication/.mvn/wrapper/maven-wrapper.jar
-Authentication/.mvn/wrapper/maven-wrapper.properties
+Authentication/.mvn/
 Authentication/target/
 Authentication/src/main/resources/application.properties
+
+### Authentication Microservice ###
+Expense/HELP.md
+Expense/.mvn/
+Expense/target/
+Expense/src/main/resources/application.properties

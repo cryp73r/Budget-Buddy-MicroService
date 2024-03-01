@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.cryp73r</groupId>
-    <artifactId>Expense</artifactId>
+    <artifactId>ExpenseTracker</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Expense</name>
     <description>Expense</description>

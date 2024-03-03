@@ -1,5 +1,6 @@
 package com.cryp73r.expense.model;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
@@ -12,6 +13,7 @@ public class Expense {
     private String name;
     private String description;
     private Long amount;
+    private String groupId;
     private List<Owner> ownedBy;
 
     public Expense() {
@@ -56,6 +58,14 @@ public class Expense {
 
     public void setAmount(Long amount) {
         this.amount = amount;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 
     public List<Owner> getOwnedBy() {

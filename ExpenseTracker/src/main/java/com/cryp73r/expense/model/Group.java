@@ -12,6 +12,8 @@ public class Group {
     private String name;
     private String description;
     private String currency;
+
+    private List<Participant> participants;
     private List<String> expenseList;
 
     public Group() {
@@ -50,6 +52,18 @@ public class Group {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public List<Participant> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(List<Participant> participants) {
+        this.participants = participants;
+    }
+
+    public void addParticipant(Participant participant) {
+        participants.add(participant);
     }
 
     public List<String> getExpenseList() {

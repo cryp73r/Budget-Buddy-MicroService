@@ -18,8 +18,8 @@ public class ExpenseController {
 
     @PostMapping(value = "/expense/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createExpense(@RequestBody Expense expense) {
-        expenseService.createExpense(expense);
+    public void addExpense(@RequestBody Expense expense) {
+        expenseService.addExpense(expense);
     }
 
     @GetMapping(value = "/expense/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

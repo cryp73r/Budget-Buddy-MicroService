@@ -14,8 +14,9 @@ public class ExpenseService {
     ExpenseRepository expenseRepository;
 
 
-    public void createExpense(Expense expense) {
+    public String addExpense(Expense expense) {
         expenseRepository.save(expense);
+        return expense.getId();
     }
 
     public Optional<Expense> getExpense(String id) {

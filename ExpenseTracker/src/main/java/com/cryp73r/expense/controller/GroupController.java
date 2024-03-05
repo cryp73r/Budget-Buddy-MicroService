@@ -29,7 +29,7 @@ public class GroupController {
         return groupService.getGroup(groupId);
     }
 
-    @PatchMapping(value = "/group/{groupId}/addExpense", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/group/{groupId}/addExpense", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public void addExpenseInGroup(@PathVariable String groupId, @RequestBody Expense expense) {
         groupService.addExpenseInGroup(groupId, expense);

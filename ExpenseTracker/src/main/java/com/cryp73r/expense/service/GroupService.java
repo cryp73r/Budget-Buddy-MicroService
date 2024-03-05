@@ -2,7 +2,6 @@ package com.cryp73r.expense.service;
 
 import com.cryp73r.expense.model.Expense;
 import com.cryp73r.expense.model.Group;
-import com.cryp73r.expense.repository.ExpenseRepository;
 import com.cryp73r.expense.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,7 @@ public class GroupService {
     GroupRepository groupRepository;
 
     @Autowired
-    ExpenseRepository expenseRepository;
+    ExpenseService expenseService;
     public void createGroup(Group group) {
         group.setExpenseList(new ArrayList<>());
         groupRepository.save(group);
@@ -30,8 +29,8 @@ public class GroupService {
     public void addExpenseInGroup(String groupId, Expense expense) {
         groupRepository.findById(groupId).ifPresent((group) -> {
             expense.setGroupId(groupId);
-            expenseRepository.save(expense);
-            group.addExpense(expense.getId());
+            String expenseId = expenseService.addExpense(expense);
+            group.addExpense(expenseId);
             groupRepository.save(group);
         });
     }

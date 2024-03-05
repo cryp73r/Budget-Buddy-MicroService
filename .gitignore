@@ -13,8 +13,14 @@ Authentication/.mvn/
 Authentication/target/
 Authentication/src/main/resources/application.properties
 
-### Authentication Microservice ###
+### ExpenseTracker Microservice ###
 Expense/HELP.md
 Expense/.mvn/
 Expense/target/
 Expense/src/main/resources/application.properties
+
+### BudgetBuddy WebUI ###
+BudgetBuddy/HELP.md
+BudgetBuddy/.mvn/
+BudgetBuddy/target/
+BudgetBuddy/src/main/resources/application.properties

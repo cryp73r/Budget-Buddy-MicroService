@@ -8,4 +8,4 @@
 
 **ExpenseTracker** This is a REST microservice, which will actually handle the main meaningful data, like the groups, expense details, etc. The data over here will be stored in a NoSQL DB (MongoDB) and the idea is to use [*Spring Data MongoDB*](https://spring.io/projects/spring-data-mongodb) to handle the operation on DB. The advantage remains the same as mentioned above. 
 
-**BudgetBuddy** This is a webservice which will utilize the above two REST microservice to manage and get the data based upon users. 
+**BudgetBuddy** This is a webservice which will utilize the above two REST microservice to manage and get the data based upon users. A separate repository is created to work on this WebService.  

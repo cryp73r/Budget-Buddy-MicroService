@@ -2,7 +2,7 @@
 #### Spring-boot based application to track and manage personal expenses. This application is made up of two REST microservice and one WebService:
 1. Authentication
 2. ExpenseTracker
-3. BudgetBuddy [WebService]
+3. [BudgetBuddy [WebService]](https://github.com/cryp73r/Budget-Buddy)
 
 **Authentication** This is a REST microservice, as the name suggests, handle the authentication part. User profile and the tokens for managing the sessions are stored in the Structured DB (SQL Server). [*Spring Data JPA*](https://spring.io/projects/spring-data-jpa) is being used to handle all the operations on DB. The flexibility of using *Spring Data JPA* is that we can use any other structured DB like: OracleDB, IBM DB2, etc. without worrying of making any code level modification.
 

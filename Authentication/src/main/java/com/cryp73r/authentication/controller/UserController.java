@@ -1,13 +1,15 @@
 package com.cryp73r.authentication.controller;
 
-import com.cryp73r.authentication.model.User;
-import com.cryp73r.authentication.sdo.UserSDO;
-import com.cryp73r.authentication.sdo.VoidReturnTypeResponseSDO;
+import com.cryp73r.authentication.dto.UserDTO;
 import com.cryp73r.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,33 +19,39 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping(value = "/user/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserSDO createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    @PostMapping(value = "/user/create", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> createUser(@RequestBody UserDTO userDTO) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", userService.signUp(userDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(null);
     }
 
-    @PostMapping(value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    public UserSDO loginUser(@RequestBody User user) {
-        return userService.loginUser(user);
+    @PostMapping(value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> loginUser(@RequestBody UserDTO userDTO) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", userService.loginUser(userDTO));
+        return ResponseEntity.noContent().headers(headers).build();
     }
 
+    @PreAuthorize("hasRole('GENERAL_USER')")
     @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    public UserSDO getUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        return userService.getUser(token);
+    public ResponseEntity<UserDTO> getUser() {
+        return ResponseEntity.ok(userService.getCurrentUser(getAuthenticatedUsername()));
     }
 
-    @PostMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    public VoidReturnTypeResponseSDO logoutUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        return userService.logoutUser(token);
-    }
-
+    @PreAuthorize("hasRole('GENERAL_USER')")
     @DeleteMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    public VoidReturnTypeResponseSDO deleteUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        return userService.deleteUser(token);
+    public ResponseEntity<Void> deleteUser() {
+        userService.deleteUser(getAuthenticatedUsername());
+        return ResponseEntity.noContent().build();
+    }
+
+    private String getAuthenticatedUsername() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        } else {
+            return principal.toString();
+        }
     }
 }

@@ -1,63 +1,63 @@
 package com.cryp73r.authentication.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.util.List;
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "UserProfile")
+@Table(name = "DEPOT_USER")
 public class User {
 
     @Id
     @GeneratedValue
+    @Column(name = "ROWID_USER")
     private Long userId;
-    @Column(nullable = false)
-    private String firstName;
-    @Column
-    private String lastName;
-    @Column(nullable = false, unique = true)
-    private String email;
-    @Column(unique = true)
-    private String username;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Column
+    @Column(name = "FIRST_NAME", nullable = false)
+    private String firstName;
+
+    @Column(name = "LAST_NAME")
+    private String lastName;
+
+    @Column(name = "EMAIL", nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "PASSWORD")
     private String password;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Column(nullable = false, unique = true)
+    @Column(name = "ROWID_IDENTIFIER", nullable = false, unique = true)
     private String identifier;
 
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "userId", nullable = false)
-    private List<Session> sessionList;
+    @Column(name = "ENABLED", nullable = false, columnDefinition = "true")
+    private boolean enabled;
 
-    public User() {
+    @CreationTimestamp
+    @Column(name = "CREATE_DATE", updatable = false)
+    private Instant createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "LAST_UPDATE_DATE")
+    private Instant updatedAt;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "DEPOT_USER_ROLE_REL",
+            joinColumns = @JoinColumn(name = "ROWID_USER"),
+            inverseJoinColumns = @JoinColumn(name = "ROWID_ROLE")
+    )
+    Set<Role> roles = new HashSet<>();
+
+    public User() {}
+
+    public Long getUserId() {
+        return userId;
     }
 
-    public User(String firstName, String username, String password) {
-        this.firstName = firstName;
-        this.username = username;
-        this.password = password;
-    }
-
-    public User(String firstName, String email, String username, String password) {
-        this.firstName = firstName;
-        this.email = email;
-        this.username = username;
-        this.password = password;
-    }
-
-    public User(String firstName, String lastName, String email, String username, String password, String identifier) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.username = username;
-        this.password = password;
-        this.identifier = identifier;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getFirstName() {
@@ -84,13 +84,6 @@ public class User {
         this.email = email;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
     public String getPassword() {
         return password;
     }
@@ -99,7 +92,6 @@ public class User {
         this.password = password;
     }
 
-    @Transient
     public String getIdentifier() {
         return identifier;
     }
@@ -108,11 +100,41 @@ public class User {
         this.identifier = identifier;
     }
 
-    public List<Session> getSessionList() {
-        return sessionList;
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    public void setSessionList(List<Session> sessionList) {
-        this.sessionList = sessionList;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public void addRole(Role role) {
+        roles.add(role);
+    }
+
+    public Set<Role> getRoles() {return roles;}
+
+    public void removeRole(Role role) {
+        roles.remove(role);
+    }
+
+    public void removeAllRoles() {
+        roles.clear();
     }
 }

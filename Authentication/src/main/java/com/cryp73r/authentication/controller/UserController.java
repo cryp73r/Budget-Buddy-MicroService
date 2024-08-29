@@ -2,7 +2,6 @@ package com.cryp73r.authentication.controller;
 
 import com.cryp73r.authentication.dto.UserDTO;
 import com.cryp73r.authentication.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,8 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping(value = "/user/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> createUser(@RequestBody UserDTO userDTO) {
@@ -37,6 +39,14 @@ public class UserController {
     @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> getUser() {
         return ResponseEntity.ok(userService.getCurrentUser(getAuthenticatedUsername()));
+    }
+
+    @PreAuthorize("hasRole('GENERAL_USER')")
+    @PostMapping(value = "/user/logout", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> logoutUser() {
+        SecurityContextHolder.clearContext();
+        // TODO: Implement logic to blacklist the token
+        return ResponseEntity.noContent().build();
     }
 
     @PreAuthorize("hasRole('GENERAL_USER')")

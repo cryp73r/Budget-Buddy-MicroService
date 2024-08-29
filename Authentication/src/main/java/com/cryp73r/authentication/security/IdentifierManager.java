@@ -1,7 +1,11 @@
 package com.cryp73r.authentication.security;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Random;
 
+@Deprecated
+@Component
 public class IdentifierManager {
 
     public String generateIdentifier() {

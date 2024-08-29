@@ -29,10 +29,12 @@ public class User {
     @Column(name = "PASSWORD")
     private String password;
 
-    @Column(name = "ROWID_IDENTIFIER", nullable = false, unique = true)
+    @Deprecated
+//    @Column(name = "ROWID_IDENTIFIER", nullable = false, unique = true)
+    @Column(name = "ROWID_IDENTIFIER", insertable = false, updatable = false)
     private String identifier;
 
-    @Column(name = "ENABLED", nullable = false, columnDefinition = "true")
+    @Column(name = "ENABLED", nullable = false, columnDefinition = "BIT default 1")
     private boolean enabled;
 
     @CreationTimestamp
@@ -92,10 +94,12 @@ public class User {
         this.password = password;
     }
 
+    @Deprecated
     public String getIdentifier() {
         return identifier;
     }
 
+    @Deprecated
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }

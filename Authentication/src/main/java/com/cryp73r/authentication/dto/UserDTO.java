@@ -1,47 +1,84 @@
-package com.cryp73r.authentication.sdo;
+package com.cryp73r.authentication.dto;
 
-import com.cryp73r.authentication.model.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-public class UserSDO {
-    private Status status;
-    private User user;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String token;
+import java.time.Instant;
+import java.util.List;
 
-    public UserSDO(Status status, User user) {
-        this.status = status;
-        this.user = user;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class UserDTO {
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String password;
+    private boolean enabled;
+    private Instant createdAt;
+    private Instant updatedAt;
+    private List<String> roleNames;
+
+    public UserDTO() {}
+
+    public String getFirstName() {
+        return firstName;
     }
 
-    public UserSDO(Status status, User user, String token) {
-        this.status = status;
-        this.user = user;
-        this.token = token;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public Status getStatus() {
-        return status;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public User getUser() {
-        return user;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getToken() {
-        return token;
+    public String getPassword() {
+        return password;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public List<String> getRoleNames() {
+        return roleNames;
+    }
+
+    public void setRoleNames(List<String> roleNames) {
+        this.roleNames = roleNames;
     }
 }

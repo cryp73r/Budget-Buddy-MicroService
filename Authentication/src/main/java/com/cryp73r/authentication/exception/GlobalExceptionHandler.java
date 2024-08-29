@@ -1,7 +1,6 @@
 package com.cryp73r.authentication.exception;
 
-import com.cryp73r.authentication.sdo.ExceptionSDO;
-import com.cryp73r.authentication.sdo.Status;
+import com.cryp73r.authentication.exception.model.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,15 +11,24 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(UserNotFoundException.class)
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ResponseEntity<Object> handleUerNotFoundException(UserNotFoundException userNotFoundException) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ExceptionSDO(new Status(HttpStatus.NOT_FOUND, userNotFoundException.getMessage())));
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(InternalServerErrorException.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<ErrorResponse> handleInternalServerException(InternalServerErrorException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(UnknownUserException.class)
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<Object> handleUnknownUserException(UnknownUserException unknownUserException) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ExceptionSDO(new Status(HttpStatus.UNAUTHORIZED, unknownUserException.getMessage())));
+    public ResponseEntity<ErrorResponse> handleUnknownUserException(UnknownUserException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 }

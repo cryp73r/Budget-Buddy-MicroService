@@ -45,7 +45,7 @@ public class UserService {
     @Transactional
     public String signUp(UserDTO userDTO) {
         User user = userMapper.UserDTOToUser(userDTO);
-        if (!userDTO.getRoleNames().isEmpty()) {
+        if (!(userDTO.getRoleNames() == null) && !userDTO.getRoleNames().isEmpty()) {
             for (String roleName : userDTO.getRoleNames()) {
                 user.addRole(roleMapper.RoleDTOToRole(roleService.getRole(roleName)));
             }
@@ -76,12 +76,12 @@ public class UserService {
     }
 
     public UserDTO getCurrentUser(String authenticatedUsername) {
-        return userMapper.UserToUserDTO(userRepository.findByIdentifier(authenticatedUsername).orElseThrow(() -> new BadCredentialsException("User not found")));
+        return userMapper.UserToUserDTO(userRepository.findByEmail(authenticatedUsername).orElseThrow(() -> new BadCredentialsException("User not found")));
     }
 
     @Transactional
     public void deleteUser(String authenticatedUsername) {
-        User user = userRepository.findByIdentifier(authenticatedUsername).orElseThrow(() -> new BadCredentialsException("User not found"));
+        User user = userRepository.findByEmail(authenticatedUsername).orElseThrow(() -> new BadCredentialsException("User not found"));
         user.removeAllRoles();
         userRepository.delete(user);
     }
